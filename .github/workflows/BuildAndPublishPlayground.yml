@@ -27,7 +27,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source-directory: 'ChiaWebPlayground/build/distributions'
+          source-directory: 'chia-web-playground/build/distributions'
           destination-github-username: 'SurrealDevelopment'
           destination-repository-name: 'ChiaLispPlaygroundSite'
           user-email: justin.hoogestraat@jacks.sdstate.edu
