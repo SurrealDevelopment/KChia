@@ -18,6 +18,10 @@ external val ace: Ace
 @JsNonModule
 external val resolver: Any
 
+// load our custom mode (result not needed)
+private val loadTheme = js(
+        "ace.config.setModuleUrl('ace/mode/clisp', require('file-loader?esModule=false!./mode-clisp.js'))"
+)
 
 @JsNonModule
 @JsModule("ace-builds")

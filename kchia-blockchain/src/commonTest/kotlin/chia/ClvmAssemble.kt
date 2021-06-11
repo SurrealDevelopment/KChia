@@ -27,14 +27,13 @@ class ClvmAssemble {
     @Test
     fun noDuplicateOps() {
         // insure no clvm opcodes are accidentally duplicated which would cause undefined behavior.
-        val x = Operators.keyOps.find { op1 ->
-            Operators.keyOps.find { op2 ->
-                if (op1 === op2) false // ignore self
-                else op1.opCode!! == op2.opCode
-            } != null
+        Operators.keyOps.forEach { op1 ->
+            Operators.keyOps.minus(op1).forEach { op2 ->
+                assertNotEquals(op1.opCode!!, op2.opCode)
+                assertNotEquals(op1.opName, op2.opName)
+                assertNotEquals(op1.rewriteSymbol, op2.rewriteSymbol)
+            }
         }
-        if (x != null) println("${x.opCode?.toString(16)}:${x.opName}:{${x.opName} is duplicated")
-        assertNull(x)
     }
 
     @Test

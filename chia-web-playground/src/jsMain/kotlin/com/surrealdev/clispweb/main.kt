@@ -49,7 +49,7 @@ fun main() {
     val edit = ace.edit("editor")
     edit.setTheme("ace/theme/chrome")
     edit.setValue(codeContext.code) // initial value
-    edit.session.setMode(("ace/mode/lisp"))
+    edit.session.setMode(("ace/mode/clisp"))
     edit.session.on("change") {
         codeContext.code = edit.getValue()
         @Suppress("RedundantUnitExpression")

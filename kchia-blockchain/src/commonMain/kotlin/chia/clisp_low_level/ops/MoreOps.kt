@@ -226,7 +226,7 @@ internal object MoreOps {
         mallocCost(cost, SExp to result)
     }
 
-    val opStrLen = buildOp(0x0D, "point_add") { args ->
+    val opStrLen = buildOp(0x0D, "strlen") { args ->
         if (args.count() != 1) {
             throw EvalError("String Len takes one argument. Got $args")
         }
@@ -241,7 +241,7 @@ internal object MoreOps {
 
     // start is inclusive stop is non inclusive
     // (substr (str (start ( stop))) -> (cost ( outString, null))
-    val opSubStr = buildOp(0x0C, "point_add") { args ->
+    val opSubStr = buildOp(0x0C, "substr") { args ->
         val argCounts = args.count()
         if (argCounts != 2 && argCounts != 3) {
             throw EvalError("Substr takes 2 or 3 arguments not $argCounts")
