@@ -11,7 +11,7 @@ ace.define("ace/mode/clisp_highlight_rules",["require","exports","module","ace/l
         var supportFunctions = "swap|x|raise|sha256|pubkey_for_exp|point_add|strlen|substr|concat|logand|logior|" +
             "logxor|lognot|softfork|" +
             "c|cons|f|first|r|rest|l|listp|" +
-            "mod|list|" + // HIGH LEVEL
+            "mod|list" + // HIGH LEVEL
             "";
         var keywordMapper = this.createKeywordMapper({
             "keyword.control": keywordControl,
@@ -24,8 +24,8 @@ ace.define("ace/mode/clisp_highlight_rules",["require","exports","module","ace/l
             {
                 "start": [
                     {
-                        token : "comment",
-                        regex : ";.*$"
+                        token: "comment",
+                        regex: ";.*$"
                     },
                     {
                         token: ["storage.type.function-type.lisp", "text", "entity.name.function.lisp"],
@@ -40,17 +40,17 @@ ace.define("ace/mode/clisp_highlight_rules",["require","exports","module","ace/l
                         regex: "(\\*)(\\S*)(\\*)"
                     },
                     {
-                        token : "constant.numeric", // hex
-                        regex : "0[xX][0-9a-fA-F]+(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
+                        token: "constant.numeric", // hex
+                        regex: "0[xX][0-9a-fA-F]+(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
                     },
                     {
-                        token : keywordMapper,
-                        regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+                        token: keywordMapper,
+                        regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
                     },
                     {
-                        token : "string",
-                        regex : '"(?=.)',
-                        next  : "qqstring"
+                        token: "string",
+                        regex: '"(?=.)',
+                        next: "qqstring"
                     }
                 ],
                 "qqstring": [
@@ -59,16 +59,16 @@ ace.define("ace/mode/clisp_highlight_rules",["require","exports","module","ace/l
                         regex: "\\\\."
                     },
                     {
-                        token : "string",
-                        regex : '[^"\\\\]+'
+                        token: "string",
+                        regex: '[^"\\\\]+'
                     }, {
-                        token : "string",
-                        regex : "\\\\$",
-                        next  : "qqstring"
+                        token: "string",
+                        regex: "\\\\$",
+                        next: "qqstring"
                     }, {
-                        token : "string",
-                        regex : '"|$',
-                        next  : "start"
+                        token: "string",
+                        regex: '"|$',
+                        next: "start"
                     }
                 ]
             };
@@ -80,20 +80,20 @@ ace.define("ace/mode/clisp_highlight_rules",["require","exports","module","ace/l
     exports.LispHighlightRules = LispHighlightRules;
 });
 
-ace.define("ace/mode/clisp",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/clisp_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/clisp", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text", "ace/mode/clisp_highlight_rules"], function (require, exports, module) {
     "use strict";
 
-    var oop = require("../lib/oop");
-    var TextMode = require("./text").Mode;
-    var LispHighlightRules = require("./clisp_highlight_rules").LispHighlightRules;
+    const oop = require("../lib/oop");
+    const TextMode = require("./text").Mode;
+    const LispHighlightRules = require("./clisp_highlight_rules").LispHighlightRules;
 
-    var Mode = function() {
+    const Mode = function () {
         this.HighlightRules = LispHighlightRules;
         this.$behaviour = this.$defaultBehaviour;
     };
     oop.inherits(Mode, TextMode);
 
-    (function() {
+    (function () {
 
         this.lineCommentStart = ";";
 
@@ -101,8 +101,9 @@ ace.define("ace/mode/clisp",["require","exports","module","ace/lib/oop","ace/mod
     }).call(Mode.prototype);
 
     exports.Mode = Mode;
-});                (function() {
-    ace.require(["ace/mode/clisp"], function(m) {
+});
+(function () {
+    ace.require(["ace/mode/clisp"], function (m) {
         if (typeof module == "object" && typeof exports == "object" && module) {
             module.exports = m;
         }

@@ -1,6 +1,7 @@
 package com.surrealdev.clispweb
 import chia.types.blockchain.Program
 import com.surrealdev.clispweb.ace.ace
+import com.surrealdev.clispweb.ace.loadAce
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposable
 import com.surrealdev.clispweb.components.*
@@ -46,6 +47,7 @@ fun main() {
         }
     }
     // this must be done after render
+    loadAce()
     val edit = ace.edit("editor")
     edit.setTheme("ace/theme/chrome")
     edit.setValue(codeContext.code) // initial value
