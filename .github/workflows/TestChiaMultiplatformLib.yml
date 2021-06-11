@@ -18,7 +18,7 @@ jobs:
 
       # Test using JVM
       - name: Test JVM
-        run: ./gradlew :ChiaBlockchainKt:jvmTest
+        run: ./gradlew :kchia-blockchain:jvmTest
 
       # Test using JS - (Broken with Kotlin IR ATM)
       #- name: Test JS

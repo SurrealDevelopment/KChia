@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="kchia-blockchain-js-development">
+    <output-path>$PROJECT_DIR$/kchia-blockchain/build/libs</output-path>
+    <root id="archive" name="kchia-blockchain-js-development.jar" />
+  </artifact>
+</component>

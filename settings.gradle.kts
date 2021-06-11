@@ -1,5 +1,5 @@
 
-rootProject.name = "KChia"
+rootProject.name = "kchia"
 
 pluginManagement {
     repositories {
@@ -8,4 +8,4 @@ pluginManagement {
     }
 }
 
-include(":ChiaWebPlayground", ":ChiaBlockchainKt")
+include(":chia-web-playground", ":kchia-blockchain")

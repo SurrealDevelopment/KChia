@@ -6,6 +6,10 @@
       <module name="Chia.ChiaBlockchainKt.commonTest" target="1.8" />
       <module name="Chia.ChiaBlockchainKt.jvmMain" target="1.8" />
       <module name="Chia.ChiaBlockchainKt.jvmTest" target="1.8" />
+      <module name="KChia.ChiaBlockchainKt.commonMain" target="1.8" />
+      <module name="KChia.ChiaBlockchainKt.commonTest" target="1.8" />
+      <module name="KChia.ChiaBlockchainKt.jvmMain" target="1.8" />
+      <module name="KChia.ChiaBlockchainKt.jvmTest" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

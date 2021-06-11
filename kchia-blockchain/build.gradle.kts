@@ -7,6 +7,7 @@ plugins {
     id("maven-publish")
 }
 
+
 kotlin {
     jvm {
         compilations.all {

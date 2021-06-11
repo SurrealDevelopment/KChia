@@ -19,7 +19,7 @@ kotlin {
             dependencies {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
-                implementation(project(":ChiaBlockchainKt"))
+                implementation(project(":kchia-blockchain"))
                 implementation(npm("ace-builds", "1.4.12"))
                 implementation(npm("file-loader", "^6.0.0"))
 
