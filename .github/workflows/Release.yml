@@ -15,7 +15,7 @@ jobs:
           java-version: 1.8
 
       - name: Publish
-        run: gradle check publish --no-configure-on-demand --no-daemon
+        run: gradle :ChiaBlockchainKt:publish --no-configure-on-demand --no-daemon
         env:
           ORG_GRADLE_PROJECT_githubUsername: ${{ github.actor }}
           ORG_GRADLE_PROJECT_githubPassword: ${{ github.token }}
