@@ -1,0 +1,55 @@
+package chia.clisp_low_level.ops
+
+object Costs {
+    val IF_COST = 33
+    val CONS_COST = 50
+    val FIRST_COST = 30
+    val REST_COST = 30
+    val LISTP_COST = 19
+    val MALLOC_COST_PER_BYTE = 10
+    val ARITH_BASE_COST = 99
+    val ARITH_COST_PER_BYTE = 3
+    val ARITH_COST_PER_ARG = 320
+    val LOG_BASE_COST = 100
+    val LOG_COST_PER_BYTE = 3
+    val LOG_COST_PER_ARG = 264
+    val GRS_BASE_COST = 117
+    val GRS_COST_PER_BYTE = 1
+    val EQ_BASE_COST = 117
+    val EQ_COST_PER_BYTE = 1
+    val GR_BASE_COST = 498
+    val GR_COST_PER_BYTE = 2
+    val DIVMOD_BASE_COST = 1116
+    val DIVMOD_COST_PER_BYTE = 6
+    val DIV_BASE_COST = 988
+    val DIV_COST_PER_BYTE = 4
+    val SHA256_BASE_COST = 87
+    val SHA256_COST_PER_ARG = 134
+    val SHA256_COST_PER_BYTE = 2
+    val POINT_ADD_BASE_COST = 101094
+    val POINT_ADD_COST_PER_ARG = 1343980
+    val PUBKEY_BASE_COST = 1325730
+    val PUBKEY_COST_PER_BYTE = 38
+    val MUL_BASE_COST = 92
+    val MUL_COST_PER_OP = 885
+    val MUL_LINEAR_COST_PER_BYTE = 6
+    val MUL_SQUARE_COST_PER_BYTE_DIVIDER = 128
+    val STRLEN_BASE_COST = 173
+    val STRLEN_COST_PER_BYTE = 1
+    val PATH_LOOKUP_BASE_COST = 40
+    val PATH_LOOKUP_COST_PER_LEG = 4
+    val PATH_LOOKUP_COST_PER_ZERO_BYTE = 4
+    val CONCAT_BASE_COST = 142
+    val CONCAT_COST_PER_ARG = 135
+    val CONCAT_COST_PER_BYTE = 3
+    val BOOL_BASE_COST = 200
+    val BOOL_COST_PER_ARG = 300
+    val ASHIFT_BASE_COST = 596
+    val ASHIFT_COST_PER_BYTE = 3
+    val LSHIFT_BASE_COST = 277
+    val LSHIFT_COST_PER_BYTE = 3
+    val LOGNOT_BASE_COST = 331
+    val LOGNOT_COST_PER_BYTE = 3
+    val APPLY_COST = 90
+    val QUOTE_COST = 20
+}

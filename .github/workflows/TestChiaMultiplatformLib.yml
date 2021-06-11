@@ -1,0 +1,25 @@
+name: Test Chia Common Lib
+on: [ push, pull_request ]
+jobs:
+  build:
+    name: Test chia mutliplatform lib
+    runs-on: ubuntu-latest
+    steps:
+
+      # Setup Java 1.8 environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+
+      # Test using JVM
+      - name: Test JVM
+        run: ./gradlew :ChiaBlockchainKt:jvmTest
+
+      # Test using JS - (Broken with Kotlin IR ATM)
+      #- name: Test JS
+      #  run: ./gradlew :ChiaBlockchainKt:jsBrowserTest

@@ -1,0 +1,35 @@
+name: Build and Publish Playground
+on: [ push, pull_request ]
+jobs:
+  build:
+    name: Build and deploy web play ground to site repo
+    runs-on: ubuntu-latest
+    steps:
+
+      # Setup Java 1.8 environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+
+      # Build product web pack, etc
+      - name: Test and Build
+        run: ./gradlew :ChiaWebPlayground:build
+
+      # If main branch update, deploy to gh-pages
+      - name: Deploy
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'ChiaWebPlayground/build/distributions'
+          destination-github-username: 'SurrealDevelopment'
+          destination-repository-name: 'ChiaLispPlaygroundSite'
+          user-email: justin.hoogestraat@jacks.sdstate.edu
+          target-branch: main
+          commit-message: 'CI Commit'

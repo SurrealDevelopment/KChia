@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ChiaBlockchainKt-jvm">
+    <output-path>$PROJECT_DIR$/ChiaBlockchainKt/build/libs</output-path>
+    <root id="archive" name="ChiaBlockchainKt-jvm.jar" />
+  </artifact>
+</component>
