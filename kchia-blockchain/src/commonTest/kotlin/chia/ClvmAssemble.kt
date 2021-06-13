@@ -12,6 +12,7 @@ import chia.clisp_low_level.ops.Operators
 import chia.clisp_low_level.runProgram
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
+import util.hexstring.toHexString
 import kotlin.test.*
 
 class ClvmAssemble {
