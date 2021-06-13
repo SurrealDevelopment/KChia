@@ -2,6 +2,7 @@
 
 package chia.clisp_low_level.elements
 
+import bls.G1Element
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.util.fromTwosComplementByteArray
 import kotlinx.serialization.Serializable
@@ -51,6 +52,9 @@ internal fun SExp.Companion.toImp(from: Any?): SExp {
                         stack.push(v)
                     }
                     v is ByteArray -> {
+                        stack.push(v.toUByteArray())
+                    }
+                    v is G1Element -> {
                         stack.push(v.toUByteArray())
                     }
                     v is Int -> {
@@ -162,6 +166,7 @@ open class SExp internal constructor(internal val _object: AtomOrPair) :
         infix fun to(that: Long) = toImp(that)
         infix fun to(that: UInt) = toImp(that)
         infix fun to(that: ULong) = toImp(that)
+        infix fun to(that: G1Element) = toImp(that)
         infix fun to(that: BigInteger) = toImp(that)
 
         infix fun to(that: String) = toImp(that)
@@ -171,7 +176,7 @@ open class SExp internal constructor(internal val _object: AtomOrPair) :
 
     val asByteArraySequence: Sequence<UByteArray> get() = SExpSerailization.SexpByteSequence(this)
 
-    val bytes: UByteArray
+    val serialized: UByteArray
         get() {
             return SExpSerailization.SexpByteSequence(this).flatten().toList().toUByteArray()
         }

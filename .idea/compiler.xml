@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="14">
+    <bytecodeTargetLevel target="11">
       <module name="Chia.ChiaBlockchainKt.commonMain" target="1.8" />
       <module name="Chia.ChiaBlockchainKt.commonTest" target="1.8" />
       <module name="Chia.ChiaBlockchainKt.jvmMain" target="1.8" />

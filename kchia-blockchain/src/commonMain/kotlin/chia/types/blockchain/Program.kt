@@ -14,7 +14,7 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Program constructor(private val sexp: SExp) {
 
-    fun toByteArray(): UByteArray = sexp.bytes
+    fun toByteArray(): UByteArray = sexp.serialized
     fun treeHash(): UByteArray = sexp.treeHash
     val hex: String get() = sexp.hex
 

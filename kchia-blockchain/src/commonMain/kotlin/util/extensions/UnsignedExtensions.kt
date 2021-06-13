@@ -18,8 +18,8 @@ fun UInt.pow(n: Int): UInt {
  */
 fun UByteArray.readULong(): ULong {
     var result = 0uL
-    var multiplier = 0uL
-    val start = if (this.size > 8) 8 else 0
+    var multiplier = 1uL
+    val start = if (this.size > 8) 8 else this.size
     for (i in (start - 1) downTo 0) {
         result += (multiplier * this[i])
         multiplier *= 256u
@@ -32,8 +32,9 @@ fun UByteArray.readULong(): ULong {
  */
 fun UByteArray.readUInt(): UInt {
     var result = 0u
-    var multiplier = 0u
-    val start = if (this.size > 4) 8 else 0
+    var multiplier = 1u
+    val start = if (this.size > 4) 4 else this.size
+    println(this)
     for (i in (start - 1) downTo 0) {
         result += (multiplier * this[i])
         multiplier *= 256u

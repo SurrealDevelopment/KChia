@@ -73,9 +73,6 @@ class ClvmAssemble {
         val run2 = runProgram(add, SExp.__null__, Operators.OPERATOR_LOOKUP)
 
         assertEquals(BigInteger(100), run2.second.asBig())
-
-
-
     }
 
     @Test
@@ -91,6 +88,81 @@ class ClvmAssemble {
         val run2 = runProgram(subAssm2, SExp.__null__, Operators.OPERATOR_LOOKUP)
         assertEquals(BigInteger(-5), run2.second.asBig())
     }
+
+    @Test
+    fun testStrOps() {
+
+        val substr = assemble("(substr (q . \"clvm\") (q . 0) (q . 4))")
+        val run3 = runProgram(substr, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("clvm", run3.second.asString())
+
+        val substr2 = assemble("(substr (q . \"clvm\") (q . 2) (q . 4))")
+        val run2 = runProgram(substr2, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("vm", run2.second.asString())
+
+        val strlen = assemble("(strlen (q . \"clvm\"))")
+        val run4 = runProgram(strlen, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals(BigInteger(4), run4.second.asBig())
+    }
+
+    @Test
+    fun testBitwiseOperations() {
+        val asm = assemble("(lognot (q . ()))")
+        val run = runProgram(asm, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals(BigInteger(-1),
+            run.second.asBig())
+
+        val asm2 = assemble("(lognot (q . 1))")
+        val run2 = runProgram(asm2, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals(BigInteger(-2),
+            run2.second.asBig())
+        val asm3 = assemble("(concat (q . -2) (q . -2))")
+        val run3 = runProgram(asm3, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("fefe",
+            run3.second.atom!!.toHexString())
+        val asm4 = assemble("(concat (q . -2) (q . -2) (q . -2) (q . -2))")
+        val run4 = runProgram(asm4, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("fefefefe",
+            run4.second.atom!!.toHexString())
+
+        val asm5 = assemble("(logxor (q . 0x01) (q . 0x01ff))")
+        val run5 = runProgram(asm5, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("01fe",
+            run5.second.atom!!.toHexString())
+        val asm6 = assemble("(logand (q . 0x01) (q . 0x03))")
+        val run6 = runProgram(asm6, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("01",
+            run6.second.atom!!.toHexString())
+    }
+
+    @Test
+    fun testSha256Op() {
+
+        val asm = assemble("(sha256 (q . \"clvm\"))")
+        val run = runProgram(asm, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("cf3eafb281c0e0e49e19c18b06939a6f7f128595289b08f60c68cef7c0e00b81",
+            run.second.atom!!.toHexString())
+    }
+
+    @Test
+    fun testBlsOp() {
+
+        val asm = assemble("(strlen (pubkey_for_exp (q . 1)))")
+        val run = runProgram(asm, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals(BigInteger(48),
+            run.second.asBig())
+        val asm3 = assemble("(pubkey_for_exp (q . 1))")
+        val run3 = runProgram(asm3, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+            run3.second.atom!!.toHexString())
+
+        val asm2 = assemble("(point_add (pubkey_for_exp (q . 1)) (pubkey_for_exp (q . 2)))")
+        val run2 = runProgram(asm2, SExp.__null__, Operators.OPERATOR_LOOKUP)
+        assertEquals("89ece308f9d1f0131765212deca99697b112d61f9be9a5f1f3780a51335b3ff981747a0b2ca2179b96d2c0c9024e5224",
+            run2.second.atom!!.toHexString())
+
+    }
+
 
     @Test
     fun testMiscCases() {

@@ -1,6 +1,6 @@
 package chia.clisp_low_level.ops
 
-import bls.PrivateKey
+import bls.*
 import chia.clisp_low_level.elements.SExp
 import chia.clisp_low_level.elements.rest
 import com.ionspin.kotlin.bignum.integer.BigInteger
@@ -30,15 +30,15 @@ internal object MoreOps {
             cost += Costs.SHA256_COST_PER_ARG
             acc + it.atom!!
         }
-        val h = Sha256()
+        val hash = Sha256().digest(bytes)
         cost += argLen * Costs.SHA256_COST_PER_BYTE
-        mallocCost(cost, SExp to h.digest(bytes))
+        mallocCost(cost, SExp to hash)
     }
 
     // Pair of atom as Uint and size of that atom's underlying structure in bytes
     fun argsAsUInt32(opName: String, args: SExp): Sequence<Pair<UInt, Int>> {
         return args.map {
-            if (it.pair != null) throw EvalError("$opName needs int")
+            if (it.pair != null) throw EvalError("$opName needs atom args")
 
             if (it.atom!!.size > 4) {
                 throw EvalError("$opName too big for int32")
@@ -202,7 +202,7 @@ internal object MoreOps {
         var i0 = i[0].first
         val l0 = i[0].second
 
-        i0 = i0.mod(BigInteger.parseString("73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001"))
+        i0 = i0.mod(BigInteger.parseString("73EDA753299D7D483339D80809A1D80553BDA402FFFE5BFEFFFFFFFF00000001", 16))
         val exponent = PrivateKey.fromByteArray(i0.toByteArray())
         try {
             val r = SExp to exponent.getG1().toByteArray()
@@ -216,13 +216,14 @@ internal object MoreOps {
 
     val opPointAdd = buildOp(0x1D, "point_add") { args ->
         var cost = Costs.POINT_ADD_BASE_COST.toBigInteger()
-        val result = args.fold(ByteArray(0)) { acc, sexp ->
+        val result = args.fold(G1Infinity()) { acc, sexp ->
             if (sexp.pair != null) {
                 throw EvalError("Cannot add lisp list here")
             }
             cost += Costs.POINT_ADD_COST_PER_ARG
-            acc + sexp.atom!!.toByteArray()
+            acc + G1FromBytes(sexp.atom!!.toByteArray())
         }
+
         mallocCost(cost, SExp to result)
     }
 
@@ -250,18 +251,19 @@ internal object MoreOps {
         if (a0.pair != null) {
             throw EvalError("Substr on list")
         }
-        val s0 = a0.atom!!
+        val stringAtom = a0.atom!!
         val res = if (argCounts == 2) {
             argsAsInt32("substr", args.rest()).first().first to
-                    s0.size
+                    stringAtom.size
         } else {
             val ints = argsAsInt32("substr", args.rest()).toList()
             ints[0].first to ints[1].first
         }
-        if (res.second > s0.size || res.second < res.first ||  res.second < 0 || res.first < 0) {
+        if (res.second > stringAtom.size || res.second < res.first ||  res.second < 0 || res.first < 0) {
             throw EvalError("Invalid substr arguments: $args")
         }
-        val substr = s0.slice(res.first until res.second)
+
+        val substr = stringAtom.slice(res.first until res.second).toUByteArray()
         BigInteger.ONE to (SExp to substr)
     }
     val opConcat = buildOp(0x0E, "concat") { args ->
@@ -310,32 +312,32 @@ internal object MoreOps {
     }
 
 
-    fun binopReduction(opName: String, initialValue: BigInteger, args: SExp,
-                       opF: (BigInteger, BigInteger) -> BigInteger ): OpRet {
-        var total = initialValue
-        var argSize = 0
-        var cost = Costs.LOG_BASE_COST.toBigInteger()
-        argsAsBig(opName, args, ).forEach {
-            total = opF(total, it.first)
-            argSize += it.second
-            cost += Costs.LOG_COST_PER_ARG
+    fun binopReduce(opName: String, args: SExp,
+                    reduce: (acc: BigInteger, it: BigInteger) -> BigInteger ): OpRet {
+
+        val big = argsAsBig(opName, args)
+        val cost = Costs.LOG_BASE_COST.toBigInteger() + // base
+                big.sumOf { Costs.LOG_COST_PER_ARG } + // cost per arg
+                big.sumOf { it.second } * Costs.LOG_COST_PER_BYTE // byte count
+
+        val reduction = big.map { it.first }.reduce { acc, it ->
+            reduce(acc, it)
         }
-        cost += Costs.LOG_COST_PER_BYTE * argSize
-        return mallocCost(cost, SExp to total)
+        return mallocCost(cost, SExp to reduction)
     }
 
     val opLogand = buildOp(0x18, "logand") { args ->
         val binop: (BigInteger, BigInteger) -> BigInteger = { a,b ->
             a.and(b)
         }
-        binopReduction("logand", BigInteger(-1), args, binop)
+        binopReduce("logand", args, binop)
     }
 
     val opLogior = buildOp(0x19, "logior") { args ->
         val binop: (BigInteger, BigInteger) -> BigInteger = { a,b ->
             a.or(b)
         }
-        binopReduction("logior", BigInteger(-1), args, binop)
+        binopReduce("logior", args, binop)
     }
 
     val opLogxor = buildOp(0x1A, "logxor") { args ->
@@ -343,13 +345,26 @@ internal object MoreOps {
             a.xor(b)
         }
 
-        binopReduction("logxor", BigInteger(-1), args, binop)
+        binopReduce("logxor", args, binop)
     }
 
+
     val opLogNot = buildOp(0x1B, "lognot") { args ->
-        val arg = argsAsBigList("lognot", args, 1).first()
-        val cost = Costs.LOGNOT_BASE_COST.toBigInteger() + arg.second * Costs.LOGNOT_COST_PER_BYTE
-        mallocCost(cost, SExp to arg.first.not())
+        if (args.count() != 1) {
+            throw EvalError("Invalid # lognot args. Expected 1. Found ${args.count()}")
+        }
+        val bytes = args.first().atom!!
+        val cost = Costs.LOGNOT_BASE_COST.toBigInteger() + bytes.size * Costs.LOGNOT_COST_PER_BYTE
+
+        if (bytes.isEmpty()) {
+            mallocCost(cost, SExp to BigInteger(-1)) // special case
+        } else {
+            val map = bytes.map {
+                it.inv()
+            }.toUByteArray()
+            mallocCost(cost, SExp to map)
+        }
+
     }
 
     val opNot = buildOp(0x20, "not") { args ->

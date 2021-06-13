@@ -305,22 +305,22 @@ fun G2Generator(ec: EC = defaultEcTwist): JacobianPoint {
 }
 
 @ExperimentalUnsignedTypes
-fun G1Infinity(ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): JacobianPoint {
+fun G1Infinity(ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): G1Element {
     return JacobianPoint(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
 }
 
 @ExperimentalUnsignedTypes
-fun G2Infinity(ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): JacobianPoint {
+fun G2Infinity(ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): G2Element {
     return JacobianPoint(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
 }
 
 @ExperimentalUnsignedTypes
-fun G1FromBytes(bytes: ByteArray, ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): JacobianPoint {
+fun G1FromBytes(bytes: ByteArray, ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): G1Element {
     return bytesTopoint(bytes.toUByteArray(), ec, FE)
 }
 
 @ExperimentalUnsignedTypes
-fun G2FromBytes(bytes: ByteArray, ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): JacobianPoint {
+fun G2FromBytes(bytes: ByteArray, ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): G2Element {
     return bytesTopoint(bytes.toUByteArray(), ec, FE)
 }
 
