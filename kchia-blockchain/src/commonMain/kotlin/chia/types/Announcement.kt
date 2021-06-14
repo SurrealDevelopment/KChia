@@ -1,3 +1,10 @@
 package chia.types
 
-class Announcement
+import util.crypto.Sha256
+
+data class Announcement(
+    val originInfo: UByteArray,
+    val message: UByteArray
+) {
+    val name get() = Sha256().digest(originInfo + message)
+}

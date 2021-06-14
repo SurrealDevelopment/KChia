@@ -2,7 +2,7 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 package chia.clisp_high_level.s2
 
-import chia.types.NodePath
+import chia.clisp_low_level.NodePath
 import chia.clisp_high_level.s2.S2Compile.quote
 import chia.clisp_low_level.assemble
 import chia.clisp_low_level.elements.SExp

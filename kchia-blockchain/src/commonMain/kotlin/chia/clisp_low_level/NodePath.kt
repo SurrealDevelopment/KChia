@@ -1,6 +1,6 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package chia.types
+package chia.clisp_low_level
 
 import chia.clisp_low_level.ops.Operators
 import com.ionspin.kotlin.bignum.integer.BigInteger

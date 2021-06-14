@@ -5,7 +5,7 @@ package chia.clisp_high_level.s2
 import chia.clisp_low_level.dissasemble
 import chia.clisp_low_level.ops.EvalError
 import chia.clisp_low_level.ops.Operators
-import chia.types.NodePath
+import chia.clisp_low_level.NodePath
 import chia.clisp_low_level.elements.*
 import chia.clisp_low_level.ops.buildOpByName
 import com.ionspin.kotlin.bignum.integer.BigInteger

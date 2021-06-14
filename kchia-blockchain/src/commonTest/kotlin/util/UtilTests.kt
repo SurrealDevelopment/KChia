@@ -1,19 +1,13 @@
 package util
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import util.crypto.HmacSha256
 import util.crypto.sha256
-import util.extensions.bitCount
-import util.extensions.bytesRequired
-import util.extensions.toBytes
-import util.extensions.trimSigned
+import util.extensions.*
 import util.hexstring.HexString
 import util.hexstring.asHexString
 import util.hexstring.toHexString
-
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @ExperimentalUnsignedTypes
 class UtilTests {
@@ -94,6 +88,14 @@ class UtilTests {
     fun toBytes() {
         assertTrue(ubyteArrayOf(0u).contentEquals(0.toBytes(1)))
         assertTrue(ubyteArrayOf(1u).contentEquals(1.toBytes(1)))
+
+        // edge case clvm behavior to insure numbers dont sign flip on us
+        assertContentEquals(ubyteArrayOf(0u, 0xffu), BigInteger(0xff).toTrimmed2sCompUbyteARray())
+
+        assertContentEquals(ubyteArrayOf(206u), BigInteger(-50).toTrimmed2sCompUbyteARray())
+        assertContentEquals(ubyteArrayOf(0x80u), BigInteger(-0x80).toTrimmed2sCompUbyteARray())
+        assertContentEquals(ubyteArrayOf(0xffu, 0x7fu), BigInteger(-0x81).toTrimmed2sCompUbyteARray())
+
     }
 
     @Test

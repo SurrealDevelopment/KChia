@@ -2,7 +2,6 @@
 
 package chia.clisp_low_level.ops
 
-import chia.clisp_low_level.dissasemble
 import chia.clisp_low_level.elements.*
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
