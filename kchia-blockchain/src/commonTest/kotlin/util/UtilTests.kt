@@ -2,10 +2,9 @@ package util
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import util.crypto.HmacSha256
-import util.crypto.sha256
+import util.crypto.digestSha256
 import util.extensions.*
 import util.hexstring.HexString
-import util.hexstring.asHexString
 import util.hexstring.toHexString
 import kotlin.test.*
 
@@ -101,7 +100,7 @@ class UtilTests {
     @Test
     fun sha256() {
         assertEquals("3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
-            "apple".encodeToByteArray().sha256().toHexString()
+            "apple".encodeToByteArray().digestSha256().toHexString()
         )
     }
 
