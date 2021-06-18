@@ -12,7 +12,7 @@ fun UInt.pow(n: Int): UInt {
 
 /**
  * Reads up to a long from this byte array
- * Assumes big endian
+ * Assumes big endian so it will read from right side
  */
 fun UByteArray.readULong(): ULong {
     var result = 0uL
@@ -24,6 +24,7 @@ fun UByteArray.readULong(): ULong {
     }
     return result
 }
+
 
 /**
  * Reads up to a int from this byte array

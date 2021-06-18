@@ -1,8 +1,8 @@
 package util.bits
 
 import util.extensions.readULong
-import util.extensions.toBytes
 import kotlin.jvm.JvmInline
+import kotlin.time.measureTime
 
 /**
  * Represent bits (encoded as boolean array
@@ -56,49 +56,60 @@ value class Bits(val bits: BooleanArray) {
     /**
      * Reads up to a u long starting at the end of this
      */
-    fun firstULong(): ULong {
+    fun firstULongRight(): ULong {
         if (size > 64) throw Exception("$size too large for 64 bit ulong")
 
-        return this.toUByteArray().readULong()
+        return this.toRightArray().readULong()
     }
 
-    /**
-     * Reads up to a signed long starting at the end of this
-     */
-    fun firstLong(): Long {
-        if (size > 64) throw Exception("$size too large for 64 bit long")
+    fun firstULongLeft(): ULong {
+        if (size > 64) throw Exception("$size too large for 64 bit ulong")
 
-        return this.toUByteArray().readULong().toLong()
+        return this.toLeftArray().take(8).toUByteArray().readULong()
     }
 
-    fun toUByteArray(): UByteArray {
-        val sizeNeeded = bits.size / 8 +
-                if (bits.size.rem(8) > 0) 1 else 0
+    val bytesNeeded: Int get() =  bits.size / 8 +
+            if (bits.size.rem(8) > 0) 1 else 0
 
-        val arr = UByteArray(sizeNeeded)
-        // pad needed 0 bits to front
-        val paddedBits = Bits((sizeNeeded * 8) - this.size) + this
 
-        for (index in (sizeNeeded - 1) downTo 0) {
-            if (paddedBits.bits[8*index + 0]) arr[index] = arr[index] or (0b10000000u)
-            if (paddedBits.bits[8*index + 1]) arr[index] = arr[index] or (0b1000000u)
-            if (paddedBits.bits[8*index + 2]) arr[index] = arr[index] or (0b100000u)
-            if (paddedBits.bits[8*index + 3]) arr[index] = arr[index] or (0b10000u)
-            if (paddedBits.bits[8*index + 4]) arr[index] = arr[index] or (0b1000u)
-            if (paddedBits.bits[8*index + 5]) arr[index] = arr[index] or (0b100u)
-            if (paddedBits.bits[8*index + 6]) arr[index] = arr[index] or (0b10u)
-            if (paddedBits.bits[8*index + 7]) arr[index] = arr[index] or (0b1u)
+
+
+    // assume size is divisible by 8
+    private fun justConvertArray(): UByteArray {
+        if (this.size.rem(8) != 0) throw IllegalStateException()
+        val arr = UByteArray(bytesNeeded)
+        for (index in (bytesNeeded - 1) downTo 0) {
+            if (bits[8*index + 0]) arr[index] = arr[index] or (0b10000000u)
+            if (bits[8*index + 1]) arr[index] = arr[index] or (0b1000000u)
+            if (bits[8*index + 2]) arr[index] = arr[index] or (0b100000u)
+            if (bits[8*index + 3]) arr[index] = arr[index] or (0b10000u)
+            if (bits[8*index + 4]) arr[index] = arr[index] or (0b1000u)
+            if (bits[8*index + 5]) arr[index] = arr[index] or (0b100u)
+            if (bits[8*index + 6]) arr[index] = arr[index] or (0b10u)
+            if (bits[8*index + 7]) arr[index] = arr[index] or (0b1u)
         }
-
         return arr
+    }
+
+    // left is first bit
+    fun toLeftArray(): UByteArray {
+        // pad needed 0 bits to right
+        val paddedBits = this + Bits((bytesNeeded * 8) - this.size)
+        return paddedBits.justConvertArray()
+    }
+
+    // right is first bit
+    fun toRightArray(): UByteArray {
+
+        // pad needed 0 bits to left
+        val paddedBits =  Bits((bytesNeeded * 8) - this.size) + this
+        return paddedBits.justConvertArray()
+
     }
 
     companion object {
 
-        fun fromUInt(uLong: UInt): Bits = Bits.fromByteArray(uLong.toBytes(8))
-        fun fromULong(uLong: ULong): Bits = Bits.fromByteArray(uLong.toBytes(8))
-        fun fromByteArray(uByteArray: UByteArray, bitSize: Int = uByteArray.size *8): Bits {
-
+        private fun justConvert(uByteArray: UByteArray): BooleanArray {
             val arr = BooleanArray(uByteArray.size * 8)
             // direct convert first
             uByteArray.forEachIndexed { index, uByte ->
@@ -111,11 +122,37 @@ value class Bits(val bits: BooleanArray) {
                 arr[8*index + 1] = uByte.and(0b1000000u) > 0u
                 arr[8*index + 0] = uByte.and(0b10000000u) > 0u // MSB
             }
+
+            return arr
+        }
+
+        // Counts bit from right side of array to left
+        // This is generally a natural conversion between byte arrays and bits.
+        // while we assume Big Endianess the way the underlying byte array is storing the bytes may differ
+        // (0x1, 0x0) size 10 = 0b0100000000
+        fun fromRightArray(uByteArray: UByteArray, bitSize: Int = uByteArray.size *8): Bits {
+
+            val arr = justConvert(uByteArray)
             // then trim, pad as needed
             val t = arr.takeLast(bitSize).toBooleanArray()
             val pad = if (t.size < bitSize)
             // pad to start
-                BooleanArray(t.size - bitSize) + t
+                BooleanArray(bitSize - t.size) + t
+            else t
+
+            return Bits(pad)
+        }
+
+        // Counts bit from left to right
+        // (0x1, 0x0) size 10 = 0b0000000100
+        fun fromLeftArray(uByteArray: UByteArray, bitSize: Int = uByteArray.size *8): Bits {
+            val arr = justConvert(uByteArray)
+
+            // then trim, pad as needed
+            val t = arr.take(bitSize).toBooleanArray()
+            val pad = if (t.size < bitSize)
+            // pad to end
+                 t + BooleanArray(bitSize - t.size)
             else t
 
             return Bits(pad)

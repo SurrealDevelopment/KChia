@@ -122,29 +122,38 @@ class UtilTests {
     @Test
     fun bits() {
         assertEquals("b00000001",
-           Bits.fromByteArray(ubyteArrayOf(1u)).toString()
+           Bits.fromRightArray(ubyteArrayOf(1u)).toString()
         )
         assertEquals("b01",
-            Bits.fromByteArray(ubyteArrayOf(1u), 2).toString()
+            Bits.fromRightArray(ubyteArrayOf(1u), 2).toString()
         )
 
         assertEquals("b11",
-            Bits.fromByteArray(ubyteArrayOf(3u), 2).toString()
+            Bits.fromRightArray(ubyteArrayOf(3u), 2).toString()
         )
         assertEquals("b00",
-            Bits.fromByteArray(ubyteArrayOf(4u), 2).toString()
+            Bits.fromRightArray(ubyteArrayOf(4u), 2).toString()
+        )
+
+        assertEquals(12uL,
+            Bits.fromRightArray(ubyteArrayOf(12u), 50).firstULongRight()
+        )
+        assertEquals(0x120000000000uL,
+            Bits.fromLeftArray(ubyteArrayOf(0x12u), 48).firstULongLeft()
         )
 
         assertContentEquals(
             ubyteArrayOf(1u,0u),
-            Bits.fromByteArray(ubyteArrayOf(1u,0u), 10).toUByteArray()
+            Bits.fromRightArray(ubyteArrayOf(1u,0u), 10).toRightArray()
         )
 
         val x =  "001452663ce6aff95993561a08dc286ecf9634c8fb126bfe8c9aab971c9baef5"
             .asHexString().toUByteArray()
 
-        assertContentEquals(x, Bits.fromByteArray(x).toUByteArray())
-        assertContentEquals(x.drop(1).toUByteArray(), Bits.fromByteArray(x, (x.size-1) * 8).toUByteArray())
+        assertContentEquals(x, Bits.fromRightArray(x).toRightArray())
+        assertContentEquals(x.drop(1).toUByteArray(), Bits.fromRightArray(x, (x.size-1) * 8).toRightArray())
+
+        assertContentEquals(x.dropLast(1).toUByteArray(), Bits.fromLeftArray(x, (x.size-1) * 8).toLeftArray())
     }
 
 
