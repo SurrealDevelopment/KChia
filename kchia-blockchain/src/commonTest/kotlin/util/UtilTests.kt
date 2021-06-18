@@ -135,6 +135,11 @@ class UtilTests {
             Bits.fromByteArray(ubyteArrayOf(4u), 2).toString()
         )
 
+        assertContentEquals(
+            ubyteArrayOf(1u,0u),
+            Bits.fromByteArray(ubyteArrayOf(1u,0u), 10).toUByteArray()
+        )
+
         val x =  "001452663ce6aff95993561a08dc286ecf9634c8fb126bfe8c9aab971c9baef5"
             .asHexString().toUByteArray()
 

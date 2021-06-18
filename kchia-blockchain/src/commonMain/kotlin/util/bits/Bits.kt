@@ -72,19 +72,24 @@ value class Bits(val bits: BooleanArray) {
     }
 
     fun toUByteArray(): UByteArray {
-        val arr = UByteArray(bits.size / 8)
-        arr.forEachIndexed { index, uByte ->
-            var i = 0u
-            if (bits[8*index + 7]) i+= 0b1u
-            if (bits[8*index + 6]) i+= 0b10u
-            if (bits[8*index + 5]) i+= 0b100u
-            if (bits[8*index + 4]) i+= 0b1000u
-            if (bits[8*index + 3]) i+= 0b10000u
-            if (bits[8*index + 2]) i+= 0b100000u
-            if (bits[8*index + 1]) i+= 0b1000000u
-            if (bits[8*index + 0]) i+= 0b10000000u
-            arr[index] = i.toUByte()
+        val sizeNeeded = bits.size / 8 +
+                if (bits.size.rem(8) > 0) 1 else 0
+
+        val arr = UByteArray(sizeNeeded)
+        // pad needed 0 bits to front
+        val paddedBits = Bits((sizeNeeded * 8) - this.size) + this
+
+        for (index in (sizeNeeded - 1) downTo 0) {
+            if (paddedBits.bits[8*index + 0]) arr[index] = arr[index] or (0b10000000u)
+            if (paddedBits.bits[8*index + 1]) arr[index] = arr[index] or (0b1000000u)
+            if (paddedBits.bits[8*index + 2]) arr[index] = arr[index] or (0b100000u)
+            if (paddedBits.bits[8*index + 3]) arr[index] = arr[index] or (0b10000u)
+            if (paddedBits.bits[8*index + 4]) arr[index] = arr[index] or (0b1000u)
+            if (paddedBits.bits[8*index + 5]) arr[index] = arr[index] or (0b100u)
+            if (paddedBits.bits[8*index + 6]) arr[index] = arr[index] or (0b10u)
+            if (paddedBits.bits[8*index + 7]) arr[index] = arr[index] or (0b1u)
         }
+
         return arr
     }
 
