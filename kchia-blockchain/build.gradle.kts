@@ -26,7 +26,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:" +
                         "${rootProject.extra["kotlin_coroutines_core_version"]}")
-                implementation("com.ionspin.kotlin:bignum:0.3.1")
+                api("com.ionspin.kotlin:bignum:0.3.1")
                 implementation("com.github.komputing.khash:sha256:1.1.1")
             }
         }

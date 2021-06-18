@@ -1,10 +1,12 @@
 package util
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import util.bits.Bits
 import util.crypto.HmacSha256
 import util.crypto.digestSha256
 import util.extensions.*
 import util.hexstring.HexString
+import util.hexstring.asHexString
 import util.hexstring.toHexString
 import kotlin.test.*
 
@@ -95,6 +97,9 @@ class UtilTests {
         assertContentEquals(ubyteArrayOf(0x80u), BigInteger(-0x80).toTrimmed2sCompUbyteARray())
         assertContentEquals(ubyteArrayOf(0xffu, 0x7fu), BigInteger(-0x81).toTrimmed2sCompUbyteARray())
 
+        assertEquals(5u, ubyteArrayOf(99u,0u,0u,0u,5u).readUInt())
+        assertNotEquals(5u, ubyteArrayOf(99u,0u,0u,0u,5u).readULong())
+
     }
 
     @Test
@@ -113,6 +118,30 @@ class UtilTests {
             ).toHexString()
         )
     }
+
+    @Test
+    fun bits() {
+        assertEquals("b00000001",
+           Bits.fromByteArray(ubyteArrayOf(1u)).toString()
+        )
+        assertEquals("b01",
+            Bits.fromByteArray(ubyteArrayOf(1u), 2).toString()
+        )
+
+        assertEquals("b11",
+            Bits.fromByteArray(ubyteArrayOf(3u), 2).toString()
+        )
+        assertEquals("b00",
+            Bits.fromByteArray(ubyteArrayOf(4u), 2).toString()
+        )
+
+        val x =  "001452663ce6aff95993561a08dc286ecf9634c8fb126bfe8c9aab971c9baef5"
+            .asHexString().toUByteArray()
+
+        assertContentEquals(x, Bits.fromByteArray(x).toUByteArray())
+        assertContentEquals(x.drop(1).toUByteArray(), Bits.fromByteArray(x, (x.size-1) * 8).toUByteArray())
+    }
+
 
 
 }

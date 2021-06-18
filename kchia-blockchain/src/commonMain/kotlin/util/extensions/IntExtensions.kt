@@ -11,12 +11,12 @@ import com.ionspin.kotlin.bignum.integer.util.toTwosComplementByteArray
  * (The [Int] will be converted into 4 bytes)
  */
 @ExperimentalUnsignedTypes
-internal fun Int.toBytes(count: Int = 4): UByteArray {
+fun Int.toBytes(count: Int = 4): UByteArray {
     return this.toUInt().toBytes(count)
 
 }
 @ExperimentalUnsignedTypes
-internal fun Long.toBytes(count: Int = 8): UByteArray {
+fun Long.toBytes(count: Int = 8): UByteArray {
     return this.toULong().toBytes(count)
 }
 
@@ -76,7 +76,7 @@ internal fun BigInteger.bytesRequired(): Int {
 }
 
 @ExperimentalUnsignedTypes
-internal fun UInt.toBytes(count: Int = 4): UByteArray {
+fun UInt.toBytes(count: Int = 4): UByteArray {
     if (count > 4) throw IllegalArgumentException()
     val result = UByteArray(count)
     for (i in 0 until count) {
@@ -86,7 +86,7 @@ internal fun UInt.toBytes(count: Int = 4): UByteArray {
 }
 
 @ExperimentalUnsignedTypes
-internal fun ULong.toBytes(count: Int = 8): UByteArray {
+fun ULong.toBytes(count: Int = 8): UByteArray {
     if (count > 8) throw IllegalArgumentException()
 
     val result = UByteArray(count)
