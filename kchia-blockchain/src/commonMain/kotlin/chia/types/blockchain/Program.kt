@@ -8,10 +8,13 @@ import chia.clisp_low_level.elements.SexpStreamDeserilizer
 import chia.clisp_low_level.elements.toImp
 import chia.clisp_low_level.ops.Operators
 import chia.clisp_low_level.runProgram
+import chia.types.serializers.ProgramSerializer
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 @JvmInline
+@Serializable(with = ProgramSerializer::class)
 value class Program constructor(private val sexp: SExp) {
 
     fun toByteArray(): UByteArray = sexp.serialized

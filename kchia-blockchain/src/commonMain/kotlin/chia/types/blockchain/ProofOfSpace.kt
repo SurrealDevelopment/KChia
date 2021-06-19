@@ -4,16 +4,32 @@ package chia.types.blockchain
 
 import bls.G1Element
 import chia.Consensus
+import chia.types.serializers.G1ElementSerializer
+import chia.types.serializers.UByteArraySerializer
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import util.crypto.Sha256
 
+@Serializable
 class ProofOfSpace private constructor(
+    @SerialName("challenge")
+    @Serializable(with = UByteArraySerializer::class)
     val challenge: UByteArray,
+    @Serializable(with = G1ElementSerializer::class)
+    @SerialName("pool_public_key")
     val poolPublicKey: G1Element?, // one or other should be non null
+    @SerialName("pool_contract_puzzle_hash")
+    @Serializable(with = UByteArraySerializer::class)
     val poolContractPuzzleHash: UByteArray?,
+    @Serializable(with = G1ElementSerializer::class)
+    @SerialName("plot_public_key")
     val plotPublicKey: G1Element,
+    @SerialName("size")
     val size: Int,
+    @SerialName("proof")
+    @Serializable(with = UByteArraySerializer::class)
     val proof: UByteArray
 ) {
     // from pool key

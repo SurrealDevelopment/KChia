@@ -1,7 +1,9 @@
 package chia.types
 
 import chia.types.blockchain.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class FullBlock(
     val finishedSubSlots: List<EndOfSubSlotBundle>,
     val rewardChainBlock: RewardChainBlock,
