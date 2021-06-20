@@ -2,8 +2,7 @@
 
 package chia.types.blockchain
 
-import chia.clisp_low_level.elements.AtomOrPair
-import chia.clisp_low_level.elements.SExp
+import chia.clisp_low_level.elements.*
 import chia.clisp_low_level.elements.SexpStreamDeserilizer
 import chia.clisp_low_level.elements.toImp
 import chia.clisp_low_level.ops.Operators
@@ -12,6 +11,7 @@ import chia.types.serializers.ProgramSerializer
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
+import kotlin.sequences.first
 
 @JvmInline
 @Serializable(with = ProgramSerializer::class)
@@ -20,6 +20,12 @@ value class Program constructor(private val sexp: SExp) {
     fun toByteArray(): UByteArray = sexp.serialized
     fun treeHash(): UByteArray = sexp.treeHash
     val hex: String get() = sexp.hex
+
+    fun first(): SExp = sexp.first()
+
+    fun rest(): SExp = sexp.rest()
+
+    fun asSexp(): SExp = sexp
 
 
     fun run(args: SExp): SExp {
