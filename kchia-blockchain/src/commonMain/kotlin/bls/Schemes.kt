@@ -1,9 +1,6 @@
 package bls
 
 
-
-typealias G1Element = JacobianPoint
-typealias G2Element = JacobianPoint
 @ExperimentalUnsignedTypes
 object Core {
 
@@ -25,7 +22,7 @@ object Core {
     }
 
     fun coreAggregateMpl(signatures: List<JacobianPoint>): JacobianPoint {
-        if (signatures.size < 1) throw IllegalArgumentException("Need a tleast 1 signature")
+        if (signatures.isEmpty()) throw IllegalArgumentException("Need a tleast 1 signature")
 
         var aggregate = signatures.first()
         aggregate.checkValid()

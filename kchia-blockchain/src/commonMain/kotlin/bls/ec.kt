@@ -22,6 +22,7 @@ data class EC(
     val sqrt_n3m1o2: BigInteger
 )
 
+
 val defaultEc
     get() =
         EC(
@@ -105,8 +106,32 @@ data class AffinePoint(val x: Field, val y: Field, val infinity: Boolean, val ec
 
 }
 
+class G1Element(
+    x: Field,
+    y: Field,
+    z: Field,
+    infinity: Boolean,
+    ec: EC): JacobianPoint(x,y,z,infinity,ec) {
+
+    operator fun plus(other: G1Element) = super.plus(other).asG1()
+    override operator fun times(other: Int) = super.times(other).asG1()
+    override operator fun times(other: BigInteger) = super.times(other).asG1()
+}
+
+class G2Element(
+    x: Field,
+    y: Field,
+    z: Field,
+    infinity: Boolean,
+    ec: EC): JacobianPoint(x,y,z,infinity,ec) {
+    operator fun plus(other: G2Element) = super.plus(other).asG2()
+    override operator fun times(other: Int) = super.times(other).asG2()
+    override operator fun times(other: BigInteger) = super.times(other).asG2()
+
+}
+
 @ExperimentalUnsignedTypes
-class JacobianPoint(
+open class JacobianPoint(
     val x: Field,
     val y: Field,
     val z: Field,
@@ -114,6 +139,9 @@ class JacobianPoint(
     val ec: EC
 ) {
     val FE = getCompanionFromClass(x::class)
+
+    fun asG1(): G1Element = G1Element(x,y,z,infinity,ec)
+    fun asG2(): G2Element = G2Element(x,y,z,infinity,ec)
 
 
     fun isOnCurve(): Boolean {
@@ -160,11 +188,11 @@ class JacobianPoint(
         return addPointsJacobian(this, other, this.ec, this.FE)
     }
 
-    operator fun times(other: BigInteger): JacobianPoint {
+    open operator fun times(other: BigInteger): JacobianPoint {
         return scalarMultiJacobian(other, this, this.ec)
     }
 
-    operator fun times(other: Int): JacobianPoint {
+    open operator fun times(other: Int): JacobianPoint {
         return scalarMultiJacobian(BigInteger(other), this, this.ec)
     }
 
@@ -295,33 +323,33 @@ internal fun yForX(forX: Field, ec: EC = defaultEc, FE: FieldCompanion): Field {
 }
 
 @ExperimentalUnsignedTypes
-fun G1Generator(ec: EC = defaultEc): JacobianPoint {
-    return AffinePoint(ec.gx, ec.gy, false, ec).toJacobian()
+fun G1Generator(ec: EC = defaultEc): G1Element {
+    return AffinePoint(ec.gx, ec.gy, false, ec).toJacobian().asG1()
 }
 
 @ExperimentalUnsignedTypes
-fun G2Generator(ec: EC = defaultEcTwist): JacobianPoint {
-    return AffinePoint(ec.g2x, ec.g2y, false, ec).toJacobian()
+fun G2Generator(ec: EC = defaultEcTwist): G2Element {
+    return AffinePoint(ec.g2x, ec.g2y, false, ec).toJacobian().asG2()
 }
 
 @ExperimentalUnsignedTypes
 fun G1Infinity(ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): G1Element {
-    return JacobianPoint(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
+    return G1Element(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
 }
 
 @ExperimentalUnsignedTypes
 fun G2Infinity(ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): G2Element {
-    return JacobianPoint(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
+    return G2Element(FE.one(ec.q), FE.one(ec.q), FE.zero(ec.q), true, ec)
 }
 
 @ExperimentalUnsignedTypes
 fun G1FromBytes(bytes: ByteArray, ec: EC = defaultEc, FE: FieldCompanion = Fq.Companion): G1Element {
-    return bytesTopoint(bytes.toUByteArray(), ec, FE)
+    return bytesTopoint(bytes.toUByteArray(), ec, FE).asG1()
 }
 
 @ExperimentalUnsignedTypes
 fun G2FromBytes(bytes: ByteArray, ec: EC = defaultEcTwist, FE: FieldCompanion = Fq2.Companion): G2Element {
-    return bytesTopoint(bytes.toUByteArray(), ec, FE)
+    return bytesTopoint(bytes.toUByteArray(), ec, FE).asG2()
 }
 
 /**

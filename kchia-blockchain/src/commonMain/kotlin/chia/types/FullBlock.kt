@@ -1,6 +1,7 @@
 package chia.types
 
 import chia.types.blockchain.*
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,6 +28,7 @@ data class FullBlock(
     @SerialName("transactions_info")
     val transactionInfo: TransactionInfo?,
     @SerialName("transactions_generator")
+    @Contextual
     val transactionGenerator: Program?,
     @SerialName("transactions_generator_ref_list")
     val transactioNRefList: List<UInt>

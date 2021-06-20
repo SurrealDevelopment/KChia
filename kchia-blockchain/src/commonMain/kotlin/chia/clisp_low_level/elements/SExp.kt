@@ -133,7 +133,6 @@ internal fun SExp.Companion.toImp(from: Any?): SExp {
 }
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "ObjectPropertyName")
-@Serializable(with = SExpSerializer::class)
 open class SExp internal constructor(internal val _object: AtomOrPair) :
     Sequence<SExp>,
     AtomOrPair{

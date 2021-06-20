@@ -16,7 +16,7 @@ value class PrivateKey(val value: BigInteger) {
         }
     }
 
-    fun getG1(): JacobianPoint = G1Generator() * value
+    fun getG1(): G1Element = G1Generator() * value
 
     override fun toString(): String {
         return "PrivateKey(${value.toString(16)})"

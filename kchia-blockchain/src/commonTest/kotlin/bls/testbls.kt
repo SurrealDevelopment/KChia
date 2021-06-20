@@ -234,7 +234,7 @@ class TestBls {
         var sk = AugSchemeMPL.keyGen(seed)
         var pk: G1Element = sk.getG1()
         val message = byteArrayOf(1, 2, 3, 4, 5)
-        var signature: G2Element = AugSchemeMPL.sign(sk, message)
+        var signature: G2Element = AugSchemeMPL.sign(sk, message).asG2()
 
         val verify = AugSchemeMPL.verify(pk, message, signature)
         assertTrue(verify)
@@ -278,18 +278,18 @@ class TestBls {
         }
 
         // pop scheme
-        val popSig1: G2Element = PopSchemeMPL.sign(sk1, message)
-        val popSig2: G2Element = PopSchemeMPL.sign(sk2, message)
-        val popSig3: G2Element = PopSchemeMPL.sign(sk3, message)
-        val pop1: G2Element = PopSchemeMPL.popProve(sk1)
-        val pop2: G2Element = PopSchemeMPL.popProve(sk2)
-        val pop3: G2Element = PopSchemeMPL.popProve(sk3)
+        val popSig1: G2Element = PopSchemeMPL.sign(sk1, message).asG2()
+        val popSig2: G2Element = PopSchemeMPL.sign(sk2, message).asG2()
+        val popSig3: G2Element = PopSchemeMPL.sign(sk3, message).asG2()
+        val pop1: G2Element = PopSchemeMPL.popProve(sk1).asG2()
+        val pop2: G2Element = PopSchemeMPL.popProve(sk2).asG2()
+        val pop3: G2Element = PopSchemeMPL.popProve(sk3).asG2()
 
         assertTrue(PopSchemeMPL.popVerify(pk1, pop1))
         assertTrue(PopSchemeMPL.popVerify(pk2, pop2))
         assertTrue(PopSchemeMPL.popVerify(pk3, pop3))
 
-        val popSigAgg: G2Element = PopSchemeMPL.aggregate(listOf(popSig1, popSig2, popSig3))
+        val popSigAgg: G2Element = PopSchemeMPL.aggregate(listOf(popSig1, popSig2, popSig3)).asG2()
 
         assertTrue(PopSchemeMPL.fastAggregateVerify(listOf(pk1, pk2, pk3), message, popSigAgg))
 
@@ -307,8 +307,8 @@ class TestBls {
         val childU: PrivateKey =  AugSchemeMPL.deriveChildSkUnderdended(masterSk, 22)
         val grandChildU: PrivateKey = AugSchemeMPL.deriveChildSkUnderdended(childU, 0)
 
-        val childUPk: G1Element = AugSchemeMPL.deriveChildPkUnhardened(masterPk, 22)
-        val grandchildUPk: G1Element = AugSchemeMPL.deriveChildPkUnhardened(childUPk, 0)
+        val childUPk: G1Element = AugSchemeMPL.deriveChildPkUnhardened(masterPk, 22).asG1()
+        val grandchildUPk: G1Element = AugSchemeMPL.deriveChildPkUnhardened(childUPk, 0).asG1()
 
         assertEquals(grandchildUPk, grandChildU.getG1())
 

@@ -1,12 +1,10 @@
-@file:UseSerializers(BigIntegerAsStringSerializer::class, UByteArraySerializer::class, G1ElementSerializer::class)
-
 package chia.types.blockchain
 
 import bls.G2Element
 import chia.types.serializers.BigIntegerAsStringSerializer
-import chia.types.serializers.G1ElementSerializer
-import chia.types.serializers.G2ElementSerializer
-import chia.types.serializers.UByteArraySerializer
+import chia.types.serializers.G1ElementAsStringSerializer
+import chia.types.serializers.UByteArrayAsStringSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -18,6 +16,7 @@ data class ChallengeBlockInfo(
     @SerialName("challenge_chain_sp_vdf")
     val challengeChainSpVDFInfo: VDFInfo?,
     @SerialName("challenge_chain_sp_signature")
+    @Contextual
     val challengeChainSpSignature: G2Element,
     @SerialName("challenge_chain_ip_vdf")
     val challengeChainIpVdf: VDFInfo
@@ -28,9 +27,11 @@ data class ChallengeChainSubSlot(
     @SerialName("challenge_chain_end_of_slot_vdf")
     val challengeChainEndOfSlotVdf :VDFInfo,
     @SerialName("infused_challenge_chain_sub_slot_hash")
-    val infusedChallengeChainSubSlotHash: UByteArray?,
+    @Contextual
+    val infusedChallengeChainSubSlotHash: Bytes32?,
     @SerialName("subepoch_summary_hash")
-    val subepochSummaryhash: UByteArray?,
+    @Contextual
+    val subepochSummaryhash: Bytes32?,
     @SerialName("new_sub_slot_iters")
     val newSubSlotIters: ULong?,
     @SerialName("new_difficulty")
@@ -48,9 +49,11 @@ data class RewardChainSubSlot(
     @SerialName("end_of_slot_vdf")
     val endOfSlotVdf: VDFInfo,
     @SerialName("challenge_chain_sub_slot_hash")
-    val challengeChainSubSlotHash: UByteArray,
+    @Contextual
+    val challengeChainSubSlotHash: Bytes32,
     @SerialName("infused_challenge_chain_sub_slot_hash")
-    val infusedChallengeChainSubSlotHash: UByteArray?,
+    @Contextual
+    val infusedChallengeChainSubSlotHash: Bytes32?,
     @SerialName("deficit")
     val deficit: UByte
 )

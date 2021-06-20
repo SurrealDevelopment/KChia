@@ -1,15 +1,15 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
-@file:UseSerializers(BigIntegerAsStringSerializer::class, UByteArraySerializer::class, G1ElementSerializer::class)
 
 package chia.types.blockchain
 
 import bls.G1Element
 import chia.Consensus
 import chia.types.serializers.BigIntegerAsStringSerializer
-import chia.types.serializers.G1ElementSerializer
-import chia.types.serializers.UByteArraySerializer
+import chia.types.serializers.G1ElementAsStringSerializer
+import chia.types.serializers.UByteArrayAsStringSerializer
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -18,16 +18,21 @@ import util.crypto.Sha256
 @Serializable
 class ProofOfSpace private constructor(
     @SerialName("challenge")
-    val challenge: UByteArray,
+    @Contextual
+    val challenge: Bytes32,
     @SerialName("pool_public_key")
+    @Contextual
     val poolPublicKey: G1Element?, // one or other should be non null
     @SerialName("pool_contract_puzzle_hash")
-    val poolContractPuzzleHash: UByteArray?,
+    @Contextual
+    val poolContractPuzzleHash: Bytes32?,
     @SerialName("plot_public_key")
+    @Contextual
     val plotPublicKey: G1Element,
     @SerialName("size")
     val size: Int,
     @SerialName("proof")
+    @Contextual
     val proof: UByteArray
 ) {
     // from pool key
@@ -35,14 +40,15 @@ class ProofOfSpace private constructor(
                  poolPublicKey: G1Element,
                  plotPublicKey: G1Element,
                  size: Int,
-                 proof: UByteArray) : this(challenge, poolPublicKey,null,plotPublicKey,size,proof)
+                 proof: UByteArray) : this(challenge.asBytes32(), poolPublicKey,null,plotPublicKey,size,proof)
 
     // from puzzle hash
     constructor( challenge: UByteArray,
                  poolContractPuzzleHash: UByteArray?,
                  plotPublicKey: G1Element,
                  size: Int,
-                 proof: UByteArray) : this(challenge, null,poolContractPuzzleHash,plotPublicKey,size,proof)
+                 proof: UByteArray) : this(challenge.asBytes32(), null,
+        poolContractPuzzleHash?.asBytes32(),plotPublicKey,size,proof)
 
 
     val plotId: UByteArray by lazy {

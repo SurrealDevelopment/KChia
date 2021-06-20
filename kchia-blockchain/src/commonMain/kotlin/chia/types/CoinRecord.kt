@@ -1,11 +1,9 @@
-@file:UseSerializers(BigIntegerAsStringSerializer::class, UByteArraySerializer::class, G1ElementSerializer::class)
-
 package chia.types
 
 import chia.types.blockchain.Coin
 import chia.types.serializers.BigIntegerAsStringSerializer
-import chia.types.serializers.G1ElementSerializer
-import chia.types.serializers.UByteArraySerializer
+import chia.types.serializers.G1ElementAsStringSerializer
+import chia.types.serializers.UByteArrayAsStringSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers

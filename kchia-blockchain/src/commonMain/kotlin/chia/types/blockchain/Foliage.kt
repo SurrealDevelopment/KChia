@@ -1,24 +1,20 @@
-@file:UseSerializers(BigIntegerAsStringSerializer::class, UByteArraySerializer::class, G1ElementSerializer::class)
-
-
 package chia.types.blockchain
 
 import bls.G2Element
-import chia.types.serializers.BigIntegerAsStringSerializer
-import chia.types.serializers.G1ElementSerializer
-import chia.types.serializers.G2ElementSerializer
-import chia.types.serializers.UByteArraySerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 
 @Serializable
 data class TransactionInfo(
     @SerialName("generator_root")
-    val generatorRoot: UByteArray, // sha 256 of block generator for this block
+    @Contextual
+    val generatorRoot: Bytes32, // sha 256 of block generator for this block
     @SerialName("generator_refs_root")
-    val generatorRefsRoot: UByteArray, // sha256 of the concatenation of the generator ref list entties
+    @Contextual
+    val generatorRefsRoot: Bytes32, // sha256 of the concatenation of the generator ref list entties
     @SerialName("aggregated_signature")
+    @Contextual
     val aggregatedSignature: G2Element,
     @SerialName("fees")
     val fees: ULong, // user fees not block rewards
@@ -32,32 +28,41 @@ data class TransactionInfo(
 @Serializable
 data class FoliageTransactionBlock(
     @SerialName("prev_transaction_block_hash")
-    val prevTransactionBlockhash: UByteArray,
+    @Contextual
+    val prevTransactionBlockhash: Bytes32,
     @SerialName("timestamp")
     val timestamp: ULong,
     @SerialName("filter_hash")
-    val filterHash: UByteArray,
+    @Contextual
+    val filterHash: Bytes32,
     @SerialName("additions_root")
-    val additionsRoot: UByteArray,
+    @Contextual
+    val additionsRoot: Bytes32,
     @SerialName("removals_root")
-    val removalsRoot: UByteArray,
+    @Contextual
+    val removalsRoot: Bytes32,
     @SerialName("transactions_info_hash")
-    val transactionInfOHash: UByteArray
+    @Contextual
+    val transactionInfOHash: Bytes32
 )
 
 // part of block signed by plot key
 @Serializable
 data class FoliageBlockData(
     @SerialName("unfinished_reward_block_hash")
-    val unfinishedRewardBlockHash: UByteArray,
+    @Contextual
+    val unfinishedRewardBlockHash: Bytes32,
     @SerialName("pool_target")
     val poolTarget: PoolTarget,
     @SerialName("pool_signature")
+    @Contextual
     val poolSiganture: G2Element?, // iff proofofspace has a pool pk
     @SerialName("farmer_reward_puzzle_hash")
-    val farmerRewardPuzzleHash: UByteArray,
+    @Contextual
+    val farmerRewardPuzzleHash: Bytes32,
     @SerialName("extension_data")
-    val extensionData: UByteArray
+    @Contextual
+    val extensionData: Bytes32
 )
 
 /**
@@ -68,15 +73,20 @@ data class FoliageBlockData(
 @Serializable
 data class Foliage(
     @SerialName("prev_block_hash")
-    val prevBlockHash: UByteArray,
+    @Contextual
+    val prevBlockHash: Bytes32,
     @SerialName("reward_block_hash")
-    val rewardBlockHash: UByteArray,
+    @Contextual
+    val rewardBlockHash: Bytes32,
     @SerialName("foliage_block_data")
     val foliageBlockData: FoliageBlockData,
     @SerialName("foliage_block_data_signature")
-    val foliageBlockDataSignature: UByteArray,
+    @Contextual
+    val foliageBlockDataSignature: G2Element,
     @SerialName("foliage_transaction_block_hash")
-    val foliageTransactionBlockHash: UByteArray?,
+    @Contextual
+    val foliageTransactionBlockHash: Bytes32?,
     @SerialName("foliage_transaction_block_signature")
+    @Contextual
     val foliageTransactionblockSignature: G2Element?
 )

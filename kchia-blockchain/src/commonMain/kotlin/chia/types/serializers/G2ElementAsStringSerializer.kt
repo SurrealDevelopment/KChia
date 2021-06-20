@@ -13,8 +13,8 @@ import kotlinx.serialization.encoding.Encoder
 import util.hexstring.asHexString
 import util.hexstring.toHexString
 
-class G2ElementSerializer: KSerializer<G2Element> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("hex", PrimitiveKind.STRING)
+class G2ElementAsStringSerializer: KSerializer<G2Element> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("G2Hex", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): G2Element {
         return G2FromBytes(decoder.decodeString().asHexString().toByteArray())
